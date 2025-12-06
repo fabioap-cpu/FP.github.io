@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Produções Musicais</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2d3436;
+            --secondary: #0984e3;
+            --accent: #00b894;
+            --light: #f9f9f9;
+            --dark: #2d3436;
+            --gray: #636e72;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        /* Main Player */
+        .main-player {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin: 2rem 0;
+            padding: 1.5rem;
+            position: sticky;
+            top: 90px;
+            z-index: 99;
+        }
+        
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+        
+        .player-header h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .control-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-btn:hover {
+            background-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .album-art {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .album-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .track-info {
+            flex-grow: 1;
+        }
+        
+        .track-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .track-artist {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .track-genre {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .progress-area {
+            margin-top: 1.5rem;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: var(--secondary);
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .progress::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -8px;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+        }
+        
+        .timer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Sections */
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .section-header {
+            padding: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--dark));
+            color: white;
+        }
+        
+        .section-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+        
+        .demo-list {
+            padding: 1.5rem;
+        }
+        
+        .demo-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .demo-item:last-child {
+            border-bottom: none;
+        }
+        
+        .demo-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .demo-item.active {
+            background-color: rgba(9, 132, 227, 0.1);
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .demo-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background-color: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .demo-info {
+            flex-grow: 1;
+        }
+        
+        .demo-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+        
+        .demo-duration {
+            font-size: 0.9rem;
+            color: var(--gray);
+            min-height: 1.2em;
+        }
+        
+        .loading-duration {
+            display: inline-block;
+            width: 50px;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loading-duration::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50px;
+            width: 50px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, #d0d0d0, transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% {
+                left: -50px;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+        
+        .play-demo {
+            background-color: transparent;
+            border: none;
+            color: var(--secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .play-demo:hover {
+            transform: scale(1.2);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        
+        .copyright {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .player-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-music"></i>
+                <h1>FP Produções <span>Musicais</span></h1>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <!-- Main Player -->
+        <section class="main-player">
+            <div class="player-header">
+                <h2>Ouvir Demonstrações</h2>
+                <div class="player-controls">
+                    <button class="control-btn" id="prev-btn">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="control-btn" id="play-pause-btn">
+                        <i class="fas fa-play" id="play-icon"></i>
+                    </button>
+                    <button class="control-btn" id="next-btn">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="player-info">
+                <div class="album-art">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Capa do Álbum" id="current-image">
+                </div>
+                <div class="track-info">
+                    <div class="track-title" id="current-track">Zouk Love - EVENT</div>
+                    <div class="track-artist" id="current-artist">Fábio AP</div>
+                    <span class="track-genre" id="current-genre">ZOUK</span>
+                </div>
+            </div>
+            
+            <div class="progress-area">
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="timer">
+                    <span id="current-time">0:00</span>
+                    <span id="total-time">Carregando...</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sections -->
+        <section class="sections">
+            <!-- Section 1 -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>Estilos Brasileiros</h3>
+                    <p>Explore a diversidade musical do Brasil</p>
+                </div>
+                <div class="demo-list">
+                    <div class="demo-item active" data-track="0">
+                        <div class="demo-icon">
+                            <i class="fas fa-drum"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Zouk Love - EVENT</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="demo-item" data-track="1">
+                        <div class="demo-icon">
+                            <i class="fas fa-guitar"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Bossa Nova Suave</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="demo-item" data-track="2">
+                        <div class="demo-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Forró Pé-de-Serra</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 2 -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>Estilos Latinos</h3>
+                    <p>Viva a paixão da música latino-americana</p>
+                </div>
+                <div class="demo-list">
+                    <div class="demo-item" data-track="3">
+                        <div class="demo-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Salsa Quente</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="demo-item" data-track="4">
+                        <div class="demo-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Bachata Romântica</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="demo-item" data-track="5">
+                        <div class="demo-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Merengue Animado</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3 -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>Estilos Internacionais</h3>
+                    <p>Descubra sons de diferentes culturas</p>
+                </div>
+                <div class="demo-list">
+                    <div class="demo-item" data-track="6">
+                        <div class="demo-icon">
+                            <i class="fas fa-globe-africa"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Afrobeat Contagiante</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="demo-item" data-track="7">
+                        <div class="demo-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">Jazz Suave</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="demo-item" data-track="8">
+                        <div class="demo-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="demo-info">
+                            <div class="demo-name">House Dance</div>
+                            <div class="demo-duration">
+                                <span class="loading-duration"></span>
+                            </div>
+                        </div>
+                        <button class="play-demo">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Aquilo que você ouve, é o que tem :) </p>
+            <div class="copyright">
+                &copy; 2025 FP Produções Musicais. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Dados das músicas com links de áudio reais
+        const musicData = [
+            {
+                title: "Zouk Love - EVENT",
+                artist: "Fábio AP",
+                genre: "Zouk",
+                image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "http://server-fabioap.ddns.net:3002/fabioap/test/raw/branch/main/KOMPAS10.mp3"
+            },
+            {
+                title: "Bossa Nova Suave",
+                artist: "Maria Oliveira",
+                genre: "Bossa Nova",
+                image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+            },
+            {
+                title: "Forró Pé-de-Serra",
+                artist: "Trios Sanfonados",
+                genre: "Forró",
+                image: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+            },
+            {
+                title: "Salsa Quente",
+                artist: "Carlos Rodriguez",
+                genre: "Salsa",
+                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
+            },
+            {
+                title: "Bachata Romântica",
+                artist: "Juan Martinez",
+                genre: "Bachata",
+                image: "https://images.unsplash.com/photo-1529641484336-ef35148bab06?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
+            },
+            {
+                title: "Merengue Animado",
+                artist: "Grupo Caribeño",
+                genre: "Merengue",
+                image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"
+            },
+            {
+                title: "Afrobeat Contagiante",
+                artist: "African Beats",
+                genre: "Afrobeat",
+                image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"
+            },
+            {
+                title: "Jazz Suave",
+                artist: "Smooth Jazz Quartet",
+                genre: "Jazz",
+                image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
+            },
+            {
+                title: "House Dance",
+                artist: "Digital Pulse",
+                genre: "House",
+                image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"
+            }
+        ];
+        
+        // Elementos do DOM
+        const currentTrackEl = document.getElementById('current-track');
+        const currentArtistEl = document.getElementById('current-artist');
+        const currentGenreEl = document.getElementById('current-genre');
+        const currentImageEl = document.getElementById('current-image');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+        const progressBarEl = document.getElementById('progress-bar');
+        const progressEl = document.getElementById('progress');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playIcon = document.getElementById('play-icon');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const demoItems = document.querySelectorAll('.demo-item');
+        const playDemoBtns = document.querySelectorAll('.play-demo');
+        
+        // Estado do player
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        let audio = new Audio();
+        
+        // Array para armazenar as durações carregadas
+        let loadedDurations = new Array(musicData.length).fill(null);
+        
+        // Função para formatar o tempo em minutos:segundos
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds === Infinity) return "0:00";
+            
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Função para carregar a duração de um áudio
+        function loadDuration(index) {
+            // Se já carregou a duração, não carrega novamente
+            if (loadedDurations[index] !== null) return;
+            
+            // Cria um áudio temporário para carregar a duração
+            const tempAudio = new Audio();
+            tempAudio.src = musicData[index].audio;
+            tempAudio.preload = "metadata";
+            
+            // Quando os metadados são carregados, atualiza a duração
+            tempAudio.addEventListener('loadedmetadata', function() {
+                loadedDurations[index] = tempAudio.duration;
+                updateDurationDisplay(index);
+            });
+            
+            // Em caso de erro, define uma duração padrão
+            tempAudio.addEventListener('error', function() {
+                loadedDurations[index] = 150; // 2:30 como fallback
+                updateDurationDisplay(index);
+            });
+        }
+        
+        // Função para atualizar a exibição da duração
+        function updateDurationDisplay(index) {
+            const durationElement = document.querySelector(`.demo-item[data-track="${index}"] .demo-duration`);
+            if (durationElement && loadedDurations[index] !== null) {
+                durationElement.innerHTML = formatTime(loadedDurations[index]);
+            }
+        }
+        
+        // Função para carregar uma faixa
+        function loadTrack(index) {
+            // Atualiza o índice atual
+            currentTrackIndex = index;
+            
+            // Atualiza as informações da faixa
+            const track = musicData[index];
+            currentTrackEl.textContent = track.title;
+            currentArtistEl.textContent = track.artist;
+            currentGenreEl.textContent = track.genre;
+            currentImageEl.src = track.image;
+            
+            // Configura o áudio com o link real
+            audio.src = track.audio;
+            
+            // Atualiza o estado dos itens da lista
+            demoItems.forEach(item => {
+                item.classList.remove('active');
+                if (parseInt(item.dataset.track) === index) {
+                    item.classList.add('active');
+                    // Atualiza o ícone do botão de play na lista
+                    const playBtn = item.querySelector('.play-demo i');
+                    playBtn.className = 'fas fa-pause';
+                } else {
+                    // Reseta o ícone dos outros botões
+                    const playBtn = item.querySelector('.play-demo i');
+                    playBtn.className = 'fas fa-play';
+                }
+            });
+            
+            // Se estava tocando, continua tocando
+            if (isPlaying) {
+                playTrack();
+            } else {
+                pauseTrack();
+            }
+            
+            // Atualiza a duração total no player principal quando o áudio carrega
+            audio.addEventListener('loadedmetadata', function() {
+                totalTimeEl.textContent = formatTime(audio.duration);
+            });
+        }
+        
+        // Função para tocar a faixa
+        function playTrack() {
+            isPlaying = true;
+            playIcon.className = 'fas fa-pause';
+            audio.play();
+            
+            // Atualiza o ícone do botão na lista
+            const activeItem = document.querySelector(`.demo-item[data-track="${currentTrackIndex}"]`);
+            const playBtn = activeItem.querySelector('.play-demo i');
+            playBtn.className = 'fas fa-pause';
+        }
+        
+        // Função para pausar a faixa
+        function pauseTrack() {
+            isPlaying = false;
+            playIcon.className = 'fas fa-play';
+            audio.pause();
+            
+            // Atualiza o ícone do botão na lista
+            const activeItem = document.querySelector(`.demo-item[data-track="${currentTrackIndex}"]`);
+            if (activeItem) {
+                const playBtn = activeItem.querySelector('.play-demo i');
+                playBtn.className = 'fas fa-play';
+            }
+        }
+        
+        // Função para ir para a próxima faixa
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % musicData.length;
+            loadTrack(currentTrackIndex);
+        }
+        
+        // Função para ir para a faixa anterior
+        function prevTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + musicData.length) % musicData.length;
+            loadTrack(currentTrackIndex);
+        }
+        
+        // Função para atualizar a barra de progresso
+        function updateProgress() {
+            if (audio.duration) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progressEl.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(audio.currentTime);
+            }
+        }
+        
+        // Função para definir a posição da reprodução
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            
+            if (duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        }
+        
+        // Inicialização
+        function init() {
+            // Carrega a primeira faixa
+            loadTrack(0);
+            
+            // Carrega as durações de todas as faixas
+            for (let i = 0; i < musicData.length; i++) {
+                loadDuration(i);
+            }
+            
+            // Configura os eventos do player
+            playPauseBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    pauseTrack();
+                } else {
+                    playTrack();
+                }
+            });
+            
+            prevBtn.addEventListener('click', prevTrack);
+            nextBtn.addEventListener('click', nextTrack);
+            
+            // Atualiza o progresso periodicamente
+            audio.addEventListener('timeupdate', updateProgress);
+            
+            // Configura a barra de progresso clicável
+            progressBarEl.addEventListener('click', setProgress);
+            
+            // Quando o áudio termina, vai para a próxima faixa
+            audio.addEventListener('ended', nextTrack);
+            
+            // Configura os botões de play das faixas
+            playDemoBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const demoItem = this.closest('.demo-item');
+                    const trackIndex = parseInt(demoItem.dataset.track);
+                    
+                    // Se já está tocando esta faixa, pausa
+                    if (currentTrackIndex === trackIndex && isPlaying) {
+                        pauseTrack();
+                    } else {
+                        // Caso contrário, carrega e toca a faixa
+                        loadTrack(trackIndex);
+                        playTrack();
+                    }
+                });
+            });
+            
+            // Configura os itens da lista para serem clicáveis
+            demoItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const trackIndex = parseInt(this.dataset.track);
+                    loadTrack(trackIndex);
+                    playTrack();
+                });
+            });
+        }
+        
+        // Inicializa o player quando a página carrega
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
